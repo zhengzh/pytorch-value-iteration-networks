@@ -57,13 +57,15 @@ class VIN(nn.Module):
             stride=1,
             padding=1)
 
-        slice_s1 = S1.long().expand(config.imsize, 1, config.l_q, q.size(0))
-        slice_s1 = slice_s1.permute(3, 2, 1, 0)
-        q_out = q.gather(2, slice_s1).squeeze(2)
+        # slice_s1 = S1.long().expand(config.imsize, 1, config.l_q, q.size(0))
+        # slice_s1 = slice_s1.permute(3, 2, 1, 0)
+        # q_out = q.gather(2, slice_s1).squeeze(2)
 
-        slice_s2 = S2.long().expand(1, config.l_q, q.size(0))
-        slice_s2 = slice_s2.permute(2, 1, 0)
-        q_out = q_out.gather(2, slice_s2).squeeze(2)
+        # slice_s2 = S2.long().expand(1, config.l_q, q.size(0))
+        # slice_s2 = slice_s2.permute(2, 1, 0)
+        # q_out = q_out.gather(2, slice_s2).squeeze(2)
+
+        q_out = q[torch.arange(q.size(0)),:,S1, S2]
 
         logits = self.fc(q_out)
         return logits, self.sm(logits)
